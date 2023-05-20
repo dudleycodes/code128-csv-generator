@@ -1,0 +1,51 @@
+# Set default behavior to automatically normalize to linux line endings.
+* text=auto eol=lf encoding=utf-8
+
+# Java artifacts
+*.class         binary
+*.ear           binary
+*.jar           binary
+*.jks           binary
+*.war           binary
+
+# Java sources and resources
+*.gradle        text diff=java
+*.gradle.kts    text diff=java
+*.groovy        text diff=java
+*.java          text diff=java
+*.kt            text diff=java
+*.properties    text
+*.scala         text diff=java
+
+# IntelliJ
+*.iml           text
+
+# Common resources
+*.bat           text eol=crlf
+*.gif           binary
+*.html          text
+*.ico           binary
+*.ini           text
+*.jpeg          binary
+*.jpg           binary
+*.json          text
+*.md            text
+*.png           binary
+*.ps1           text eol=crlf
+*.sh            text
+*.txt           text
+*.webp          binary
+*.xml           text
+*.xlsx          binary
+*.yaml          text
+*.yml           text
+
+# Project specific files
+*.Dockerfile    text
+.editorconfig   text
+.gitattributes  text
+.gitignore      text
+Dockerfile      text
+gradlew         text
+LICENSE         text
+lombok.config   text
