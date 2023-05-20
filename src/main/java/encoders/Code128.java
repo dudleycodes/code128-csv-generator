@@ -8,63 +8,53 @@ public class Code128 {
             throw new IllegalArgumentException("Input cannot be null or blank.");
         }
 
-        int ind = 1;
+        int i = 1;
         int checksum = 0;
         int mini;
         int dummy;
         boolean tableB;
         String code128;
-        int longueur;
+        int length;
         code128 = "";
-        longueur = chaine.length();
+        length = chaine.length();
 
-        for (ind = 0; ind < longueur; ind++) {
-            if ((chaine.charAt(ind) < 32) || (chaine.charAt(ind) > 126)) {
+        for (i = 0; i < length; i++) {
+            if ((chaine.charAt(i) < 32) || (chaine.charAt(i) > 126)) {
                 throw new IllegalArgumentException("Input contains invalid characters.");
             }
         }
 
         tableB = true;
-        ind = 0;
-        while (ind < longueur) {
+        i = 0;
+        while (i < length) {
             if (tableB) {
-                if ((ind == 0) || (ind + 3 == longueur - 1)) {
-                    mini = 4;
-                } else {
-                    mini = 6;
-                }
+                mini = ((i == 0) || (i + 4 == length)) ? 3 : 5;
 
-                mini = mini - 1;
-                if ((ind + mini) <= longueur - 1) {
+                if ((i + mini) <= length - 1) {
                     while (mini >= 0) {
-                        if ((chaine.charAt(ind + mini) < 48) || (chaine.charAt(ind + mini) > 57)) {
+                        if ((chaine.charAt(i + mini) < 48) || (chaine.charAt(i + mini) > 57)) {
                             break;
                         }
-                        mini = mini - 1;
+                        mini--;
                     }
                 }
 
                 if (mini < 0) {
-                    if (ind == 0) {
-                        code128 = Character.toString((char) 205);
-                    } else {
-                        code128 = code128 + (char) 199;
-                    }
+                    code128 = (i == 0) ? Character.toString((char) 205) : code128 + (char) 199;
                     tableB = false;
                 } else {
-                    if (ind == 0) {
+                    if (i == 0) {
                         code128 = Character.toString((char) 204);
                     }
                 }
             }
 
             if (!tableB) {
-                mini = 2;
-                mini = mini - 1;
+                mini = 1;
 
-                if (ind + mini < longueur) {
+                if (i + mini < length) {
                     while (mini >= 0) {
-                        if (((chaine.charAt(ind + mini)) < 48) || ((chaine.charAt(ind)) > 57)) {
+                        if (((chaine.charAt(i + mini)) < 48) || ((chaine.charAt(i)) > 57)) {
                             break;
                         }
                         mini = mini - 1;
@@ -72,14 +62,10 @@ public class Code128 {
                 }
 
                 if (mini < 0) {
-                    dummy = Integer.parseInt(chaine.substring(ind, ind + 2));
-                    if (dummy < 95) {
-                        dummy = dummy + 32;
-                    } else {
-                        dummy = dummy + 100;
-                    }
+                    dummy = Integer.parseInt(chaine.substring(i, i + 2));
+                    dummy += (dummy < 95) ? 32 : 100;
                     code128 = code128 + (char) (dummy);
-                    ind = ind + 2;
+                    i += 2;
                 } else {
                     code128 = code128 + (char) 200;
                     tableB = true;
@@ -87,31 +73,30 @@ public class Code128 {
             }
 
             if (tableB) {
-                code128 = code128 + chaine.charAt(ind);
-                ind = ind + 1;
+                code128 = code128 + chaine.charAt(i);
+                i++;
             }
         }
 
-        for (ind = 0; ind <= code128.length() - 1; ind++) {
-            dummy = code128.charAt(ind);
+        for (i = 0; i <= code128.length() - 1; i++) {
+            dummy = code128.charAt(i);
             if (dummy < 127) {
                 dummy = dummy - 32;
             } else {
                 dummy = dummy - 100;
             }
-            if (ind == 0) {
+            if (i == 0) {
                 checksum = dummy;
             }
-            checksum = (checksum + (ind) * dummy) % 103;
+            checksum = (checksum + (i) * dummy) % 103;
         }
 
         if (checksum < 95) {
-            checksum = checksum + 32;
+            checksum += 32;
         } else {
-            checksum = checksum + 100;
+            checksum += 100;
         }
 
-        code128 = code128 + (char) (checksum) + (char) (206);
-        return code128;
+        return code128 + (char) (checksum) + (char) (206);
     }
 }
