@@ -97,6 +97,8 @@ public class Code128 {
             checksum += 100;
         }
 
-        return code128 + (char) (checksum) + (char) (206);
+        code128 = code128 + (char) (checksum) + (char) (206);
+
+        return code128.replaceAll(" ", "Â");
     }
 }
