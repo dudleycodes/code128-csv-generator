@@ -3,8 +3,8 @@ package encoders;
 // Ported from C# code written by Joffrey VERDIER - https://grandzebu.net/informatique/codbar/code128_C%23.txt
 
 public class Code128 {
-    public static String Encode(String chaine) {
-        if (chaine == null || chaine.isBlank()) {
+    private static String encode(String input) {
+        if (input == null || input.isBlank()) {
             throw new IllegalArgumentException("Input cannot be null or blank.");
         }
 
@@ -16,10 +16,10 @@ public class Code128 {
         String code128;
         int length;
         code128 = "";
-        length = chaine.length();
+        length = input.length();
 
         for (i = 0; i < length; i++) {
-            if ((chaine.charAt(i) < 32) || (chaine.charAt(i) > 126)) {
+            if ((input.charAt(i) < 32) || (input.charAt(i) > 126)) {
                 throw new IllegalArgumentException("Input contains invalid characters.");
             }
         }
@@ -32,7 +32,7 @@ public class Code128 {
 
                 if ((i + mini) <= length - 1) {
                     while (mini >= 0) {
-                        if ((chaine.charAt(i + mini) < 48) || (chaine.charAt(i + mini) > 57)) {
+                        if ((input.charAt(i + mini) < 48) || (input.charAt(i + mini) > 57)) {
                             break;
                         }
                         mini--;
@@ -54,7 +54,7 @@ public class Code128 {
 
                 if (i + mini < length) {
                     while (mini >= 0) {
-                        if (((chaine.charAt(i + mini)) < 48) || ((chaine.charAt(i)) > 57)) {
+                        if (((input.charAt(i + mini)) < 48) || ((input.charAt(i)) > 57)) {
                             break;
                         }
                         mini = mini - 1;
@@ -62,7 +62,7 @@ public class Code128 {
                 }
 
                 if (mini < 0) {
-                    dummy = Integer.parseInt(chaine.substring(i, i + 2));
+                    dummy = Integer.parseInt(input.substring(i, i + 2));
                     dummy += (dummy < 95) ? 32 : 100;
                     code128 = code128 + (char) (dummy);
                     i += 2;
@@ -73,7 +73,7 @@ public class Code128 {
             }
 
             if (tableB) {
-                code128 = code128 + chaine.charAt(i);
+                code128 = code128 + input.charAt(i);
                 i++;
             }
         }
@@ -100,5 +100,17 @@ public class Code128 {
         code128 = code128 + (char) (checksum) + (char) (206);
 
         return code128.replaceAll(" ", "Â");
+    }
+
+    public static String Encode(String input) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException("Input cannot be null or blank.");
+        }
+
+        if (input.contains(" ")) {
+            throw new UnsupportedOperationException("This encoder does not yes support any whitespace characters.");
+        }
+
+        return encode(input);
     }
 }
